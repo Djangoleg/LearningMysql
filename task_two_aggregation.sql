@@ -6,13 +6,12 @@ from users u;
 -- 2. Подсчитайте количество дней рождения, которые приходятся на каждый из дней недели. Следует учесть, что необходимы дни недели текущего года, а не года рождения.
 
 -- Вернет количество дней рождения по дням недели.
-select date_format( 
-		str_to_date(concat(date_format(p.birthday, '%d'), '.' ,date_format(p.birthday, '%m'), '.', date_format(now(), '%y')), '%d.%m.%y'), '%a') daysofweek,
+select date_format(
+		str_to_date(concat(date_format(u.birthday_at, '%d'), '.' ,date_format(u.birthday_at, '%m'), '.', date_format(now(), '%y')), '%d.%m.%y'), '%a') daysofweek,
 	count(1) dayscount
 from users u 
-join profiles p on u.id = p.user_id and p.birthday is not null
 group by date_format( 
-	str_to_date(concat(date_format(p.birthday, '%d'), '.' ,date_format(p.birthday, '%m'), '.', date_format(now(), '%y')), '%d.%m.%y'), '%a');
+	str_to_date(concat(date_format(u.birthday_at, '%d'), '.' ,date_format(u.birthday_at, '%m'), '.', date_format(now(), '%y')), '%d.%m.%y'), '%a');
 
 -- Ещё вариант с временной таблицей.
 create temporary table tempDaysOfweek (id varchar(3)); 
