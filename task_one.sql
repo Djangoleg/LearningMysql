@@ -1,6 +1,6 @@
 -- 1. Повторить все действия по доработке БД vk.
 
--- Удалён constraint для таблицы vk.profiles. FOREIGN KEY по полю photo_id ссылка на поле id таблицы photos
+-- Удалён constraint для таблицы vk.profiles. FOREIGN KEY по полю photo_id ссылка на поле id таблицы media.
 ALTER TABLE vk.profiles 
 drop constraint profiles_fk_1;
 
