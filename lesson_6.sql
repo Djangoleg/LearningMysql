@@ -90,7 +90,7 @@ limit 1;
 
 select count(1)
 from likes l 
-where l.user_id in (
+where l.target_user_id in (
 	-- 10 cамых молодых пользователей.
 	select sq.user_id 
     from (
