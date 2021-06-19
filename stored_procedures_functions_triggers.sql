@@ -12,7 +12,7 @@ BEGIN
 	
 	if dateNow >= STR_TO_DATE(concat(date_format(now(), '%d.%m.%Y'), ' 06:00:00'), '%d.%m.%Y %H:%i:%s') and
 		dateNow < STR_TO_DATE(concat(date_format(now(), '%d.%m.%Y'), ' 12:00:00'), '%d.%m.%Y %H:%i:%s') 
-	then set out_welcome_phrase = 'Доброе утро';
+		then set out_welcome_phrase = 'Доброе утро';
 
 	elseif dateNow >= STR_TO_DATE(concat(date_format(now(), '%d.%m.%Y'), ' 12:00:00'), '%d.%m.%Y %H:%i:%s') and
 			dateNow < STR_TO_DATE(concat(date_format(now(), '%d.%m.%Y'), ' 18:00:00'), '%d.%m.%Y %H:%i:%s') 
