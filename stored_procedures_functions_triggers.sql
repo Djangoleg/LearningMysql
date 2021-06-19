@@ -99,10 +99,10 @@ DELIMITER $$
 CREATE FUNCTION Fibonacci(
 	in_number int
 ) 
-RETURNS VARCHAR(20)
+RETURNS bigint
 DETERMINISTIC
 BEGIN
-    DECLARE fibonacci_number int;
+    DECLARE fibonacci_number bigint;
 	
    	WITH RECURSIVE fibonacci (n, fib_n, next_fib_n) AS
 	(
@@ -122,4 +122,5 @@ BEGIN
 END$$
 DELIMITER ;
 
-select Fibonacci(9);
+select Fibonacci(90);
+
