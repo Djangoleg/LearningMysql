@@ -117,7 +117,7 @@ BEGIN
 	order by f.next_fib_n desc
 	limit 1;
     
-	-- return the customer level
+	-- return the calc fibonacci number
 	RETURN (fibonacci_number);
 END$$
 DELIMITER ;
