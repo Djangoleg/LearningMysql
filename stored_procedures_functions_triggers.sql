@@ -34,7 +34,7 @@ DELIMITER ;
 call Greeting(@out_welcome_phrase);
 SELECT @out_welcome_phrase;
 
--- 3. В таблице products есть два текстовых поля: name с названием товара и description с его описанием. 
+-- 2. В таблице products есть два текстовых поля: name с названием товара и description с его описанием. 
 -- Допустимо присутствие обоих полей или одно из них. Ситуация, когда оба поля принимают неопределенное значение NULL неприемлема. 
 -- Используя триггеры, добейтесь того, чтобы одно из этих полей или оба поля были заполнены. 
 -- При попытке присвоить полям NULL-значение необходимо отменить операцию.
@@ -90,4 +90,36 @@ INSERT INTO products
 VALUES
   (null, null, 7890.00, 1);
 
- 
+-- 3. (по желанию) Напишите хранимую функцию для вычисления произвольного числа Фибоначчи. 
+-- Числами Фибоначчи называется последовательность в которой число равно сумме двух предыдущих чисел. 
+-- Вызов функции FIBONACCI(10) должен возвращать число 55.
+
+drop function if exists Fibonacci;
+DELIMITER $$
+CREATE FUNCTION Fibonacci(
+	in_number int
+) 
+RETURNS VARCHAR(20)
+DETERMINISTIC
+BEGIN
+    DECLARE fibonacci_number int;
+	
+   	WITH RECURSIVE fibonacci (n, fib_n, next_fib_n) AS
+	(
+	  SELECT 1, 0, 1
+	  UNION ALL
+	  SELECT n + 1, next_fib_n, fib_n + next_fib_n
+	    FROM fibonacci WHERE n < in_number
+	)
+	SELECT f.next_fib_n 
+	into fibonacci_number
+	FROM fibonacci f
+	order by f.next_fib_n desc
+	limit 1;
+    
+	-- return the customer level
+	RETURN (fibonacci_number);
+END$$
+DELIMITER ;
+
+select Fibonacci(9);
