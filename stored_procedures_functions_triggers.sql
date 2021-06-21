@@ -39,7 +39,7 @@ SELECT @out_welcome_phrase;
 -- Используя триггеры, добейтесь того, чтобы одно из этих полей или оба поля были заполнены. 
 -- При попытке присвоить полям NULL-значение необходимо отменить операцию.
 
--- СОздание таблицы.
+-- Создание таблицы.
 DROP TABLE IF EXISTS products;
 CREATE TABLE products (
   id SERIAL PRIMARY KEY,
