@@ -52,3 +52,57 @@ END$$
 DELIMITER ;
 
 -- 2. (по желанию) Создайте SQL-запрос, который помещает в таблицу users миллион записей.
+
+-- Создание процедуры для генерации данных в таблицу users.
+DROP PROCEDURE IF EXISTS DataGenerationToUsers;
+
+DELIMITER $$
+CREATE PROCEDURE DataGenerationToUsers (
+	IN RecordsCount_I INT,
+	IN CommitEveryRecords_I INT
+)
+BEGIN
+  DECLARE name_ VARCHAR(255);
+  DECLARE birthday_ DATETIME;
+  DECLARE counter_ INT DEFAULT 0;
+  
+  IF (RecordsCount_I > 0) THEN
+  
+    -- Коммит каждые n записей.
+    SET CommitEveryRecords_I = IFNULL(CommitEveryRecords_I, 1000);
+  	
+    START TRANSACTION;
+  	
+    WHILE counter_ < RecordsCount_I DO
+  	  SET counter_  = counter_  + 1;
+  	 
+  	  -- Генерация имени.
+  	  select elt(floor(rand()*20) + 1, 'James', 'John', 'Robert',	'Michael', 'William', 'David', 'Richard', 'Joseph',
+								 'Charles', 'Thomas', 'Amelia', 'Olivia', 'Isla', 'Emily', 'Poppy', 'Ava',
+								 'Isabella', 'Jessica', 'Lily', 'Sophie')
+	  into name_;
+	 
+	  -- Генерация даты рождения.
+	  select DATE(TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, '1980-01-01 00:00:00', '2010-01-01 00:00:00')), '1980-01-01 00:00:00'))
+	  into birthday_;
+  	 
+  	  INSERT INTO users (name, birthday_at) 
+  	  VALUES (name_, birthday_);
+  	 
+  	  IF counter_ = CommitEveryRecords_I THEN
+  	    COMMIT;
+  	  END IF;
+	
+    END WHILE;
+
+	COMMIT;
+
+  ELSE
+	SELECT 'Ошибочное значение входного параметра RecordsCount_I';
+  END IF;
+END$$
+DELIMITER ;
+
+-- Если я правильно понял задание. Генерим данные в таблицу users.
+call DataGenerationToUsers(1000000000, 1000);
+select * from users u;
