@@ -1,21 +1,21 @@
 -- 1. Заполняем типы.
-insert into contact_type(name, description)
-values('Сотрудник', 'Наш сотрудник'),('Клиент', null);
+insert into contact_type(id, name, description)
+values(1, 'Сотрудник', 'Наш сотрудник'),(2, 'Клиент', null);
 
-insert into communications_type(name)
-values('Мобильный телефон'), ('e-mail'), ('Рабочий телефон');
+insert into communications_type(id, name)
+values(1, 'Мобильный телефон'), (2, 'e-mail'), (3, 'Рабочий телефон');
 
-insert into legal_person_type(name)
-values('Наша компания'), ('Клиент'),('Партнёр');
+insert into legal_person_type(id, name)
+values(1, 'Наша компания'), (2, 'Клиент'), (3, 'Партнёр');
 
-insert into activity_type(name)
-values('Звонок'), ('Встреча'),('Заключение договора');
+insert into activity_type(id, name)
+values(1, 'Звонок'), (2, 'Встреча'), (3, 'Заключение договора');
 
-insert into document_types(name)
-values('Договор');
+insert into document_types(id, name)
+values(1, 'Договор');
 
-insert into activity_result(name)
-values('Назначена встреча'), ('Заключен договор'), ('Отказ клиента');
+insert into activity_result(id, name)
+values(1, 'Назначена встреча'), (2, 'Заключен договор'), (3, 'Отказ клиента');
 /*
 select * from communications_type;
 select * from legal_person_type;
@@ -408,7 +408,7 @@ select (select c.id
 		concat('№ ', FLOOR(100 + RAND() * (1000)), '_', lp.id) con_number,
 		DATE(TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, '2020-01-01 00:00:00', now())), '2020-01-01 00:00:00')) start_date,
 		'Test contract ',
-		FLOOR(1000000 + RAND() * (100000000)) amount
+		FLOOR(100000 + RAND() * (10000000)) amount
 from legal_persons lp 
 where lp.legal_person_type_id = 2; -- Клиент
 
@@ -442,7 +442,7 @@ select (select c.id
 		cm.legal_persons_id,
 		101,
 		cm.contract_id,
-		FLOOR(1000000 + RAND() * (100000000)) amount,
+		FLOOR(100000 + RAND() * (10000000)) amount,
 		'Test dealings'
 from contract_members cm
 where cm.legal_persons_id <> 101;
