@@ -246,6 +246,11 @@ update contacts c
 set c.legal_persons_id = 101
 where c.id = 101;
 
+update contacts c
+set c.contact_type_id = (select ct.id from contact_type ct where ct.name = 'Клиент')
+where c.legal_persons_id <> 101;
+
+
 -- Средства связи контакта. Мобильный телефон.
 insert into contact_communications(name,communications_type_id,contacts_id,created_at)
 select concat('79', substring(cast(3 + (rand() * 10) % 7 AS char(50)), 1, 1), right(left(trim(cast(rand() AS char(50))), 11), 8)) phone,
@@ -304,6 +309,30 @@ select (select c.id
 		now()
 from legal_persons l;
 
+insert into activity(employee_id,
+					 start_date,
+					 name,
+					 activity_type_id,
+					 activity_result_id,
+					 legal_persons_id,
+					 created_at,
+					 updated_at)
+select (select c.id 
+		from contacts c
+		where c.contact_type_id = 1 -- Сотрудник
+		order by rand()
+		limit 1), 
+		DATE(TIMESTAMPADD(SECOND, FLOOR(RAND() * TIMESTAMPDIFF(SECOND, '2020-01-01 00:00:00', now())), '2020-01-01 00:00:00')) start_date,
+		(select concat('Test activity ', name) 
+		 from activity_type
+		 order by rand()
+		 limit 1) name,
+		FLOOR(RAND() * (3)) + 1 activity_type, 
+		FLOOR(RAND() * (3)) + 1 activity_result,
+		1,
+		now(),
+		now();
+
 update activity a
 set a.end_date = DATE(DATE_ADD(a.start_date, INTERVAL 1 HOUR));
 
@@ -334,7 +363,7 @@ values('Тестовая рассылка 1', 'Тестовая рассылка
 -- Аудитория расылки.
 insert into distribution_target(distribution_id,
 								contacts_id,
-								contact_communications_id,
+								communications_type_id,
 								name,
 								date_send,
 								created_at)
@@ -356,13 +385,13 @@ where c.contact_type_id = 2; -- Клиент
 
 insert into distribution_target(distribution_id,
 								contacts_id,
-								contact_communications_id,
+								communications_type_id,
 								name,
 								date_send,
 								created_at)
 select 2, 
 	   c.id,  
-	   3, -- email.
+	   2, -- email.
 	   (select cc.name 
 		from contact_communications cc 
 		where
@@ -376,13 +405,13 @@ where c.contact_type_id = 2; -- Клиент
 
 insert into distribution_target(distribution_id,
 								contacts_id,
-								contact_communications_id,
+								communications_type_id,
 								name,
 								date_send,
 								created_at)
 select 3, 
 	   c.id,  
-	   3, -- email.
+	   2, -- email.
 	   (select cc.name 
 		from contact_communications cc 
 		where
@@ -466,25 +495,39 @@ insert into document(document_types_id,
 					 metadata,
 					 created_at,
 					 updated_at)
-select 1, ct.employee_id, 101, 'Тестовый договор поставки',  (select concat('contract_', cm.legal_persons_id, '.pdf') 
-													 from contract_members cm
-													 where cm.legal_persons_id <> 101
-													 and cm.contract_id = ct.id
-													 limit 1),  FLOOR(1000 + RAND() * (10000)), null, now(), now()
+select 1, 
+	   ct.employee_id, 
+	   (select cm.legal_persons_id 
+	    from contract_members cm
+	    where cm.legal_persons_id <> 101
+	    and cm.contract_id = ct.id
+	    limit 1) legal_persons_id, 
+		'Тестовый договор поставки',  
+	   (select concat('contract_', cm.legal_persons_id, '.pdf') 
+	    from contract_members cm
+	    where cm.legal_persons_id <> 101
+	    and cm.contract_id = ct.id
+	    limit 1),  
+	    FLOOR(1000 + RAND() * (10000)), 
+	    null, 
+	    now(), 
+	    now()
 from contract ct; 
 
-
-insert into document_to_dealings(dealings_id, document_id)
-select d.id, doc.id 
+insert into document_to_dealings(document_id, dealings_id)
+select doc.id, (select d.id 
+				from dealings d
+				order by rand()
+				limit 1) 
 from document doc
-join dealings d on doc.contacts_id = d.employee_id
 order by doc.id
 limit 25;
 
-insert into document_to_contract(contract_id, document_id)
-select c.id, doc.id 
+insert into document_to_contract(document_id, contract_id)
+select doc.id, (select d.id 
+				from contract d
+				order by rand()
+				limit 1)  
 from document doc
-join contract c on doc.contacts_id = c.employee_id
 order by doc.id desc
 limit 25;
-

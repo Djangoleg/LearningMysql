@@ -247,14 +247,16 @@ CREATE TABLE distribution_target (
 	id SERIAL PRIMARY KEY,
 	distribution_id BIGINT UNSIGNED COMMENT 'ИД рассылки',
 	contacts_id BIGINT UNSIGNED COMMENT 'ИД контакта',
-	contact_communications_id BIGINT UNSIGNED COMMENT 'ИД средства связи',
+	-- contact_communications_id BIGINT UNSIGNED COMMENT 'ИД средства связи',
+	communications_type_id BIGINT UNSIGNED COMMENT 'ИД типа средства связи',
+	name VARCHAR(255) not null COMMENT 'Номер средства связи',
 	date_send DATETIME COMMENT 'Дата отправки',
 	created_at DATETIME DEFAULT CURRENT_TIMESTAMP COMMENT 'Дата создания',
 	FOREIGN KEY (distribution_id) REFERENCES distribution(id),
 	FOREIGN KEY (contacts_id) REFERENCES contacts(id),
-	FOREIGN KEY (contact_communications_id) REFERENCES contact_communications(id),
+	FOREIGN KEY (communications_type_id) REFERENCES communications_type(id),
 	KEY index_of_contacts_id(contacts_id),
-    KEY index_of_contact_communications_id(contact_communications_id)
+    KEY index_of_communications_type_id(communications_type_id)
 ) COMMENT = 'Аудитория рассылки';
 
 -- Тип документа.

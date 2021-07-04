@@ -5,6 +5,9 @@
 ERDiagram для БД png - er_diagram_easyCRM.png<br>
 ERDiagram для БД xml - er_diagram_easyCRM.graphml<br>
 Данные для БД EasyCRM - addDataToEasyCRM.sql<br>
+Скрипты характерных выборок - commonSelects.sql<br>
+Представления - createView.sql<br>
+Процедуры - createProcedure.sql<br>
 <br>
 <br>
 Общее предназначение: автоматизация работы с клиентами.<br>
