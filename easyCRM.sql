@@ -10,8 +10,6 @@ CREATE TABLE contact_type (
   description VARCHAR(255) COMMENT 'Описание типа'
 ) COMMENT = 'Тип контакта';
 
--- TODO: position - справочник должностей?
-
 -- Контакты.
 DROP TABLE IF EXISTS contacts;
 CREATE TABLE contacts (
@@ -44,7 +42,7 @@ CREATE TABLE user_credentials (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT 'Дата изменения',
     FOREIGN KEY (contacts_id) REFERENCES contacts(id),
 	KEY index_of_contacts_id(contacts_id),
-	KEY index_of_login(login)
+	KEY index_of_login_pass(login, password_hash)
 ) COMMENT = 'Учётные данные';
 
 -- Тип cредства связи.
@@ -68,7 +66,8 @@ CREATE TABLE contact_communications (
     FOREIGN KEY (contacts_id) REFERENCES contacts(id),
     
     KEY index_of_communications_type_id(communications_type_id),
-    KEY index_of_contacts_id(contacts_id)
+    KEY index_of_contacts_id(contacts_id),
+    KEY index_of_name(name)
 ) COMMENT = 'Средства связи';
 
 -- Тип юрлица.
@@ -125,7 +124,8 @@ CREATE TABLE legal_persons_communications (
     FOREIGN KEY (legal_persons_id) REFERENCES legal_persons(id),
     
     KEY index_of_communications_type_id(communications_type_id),
-    KEY index_of_legal_persons_id(legal_persons_id)
+    KEY index_of_legal_persons_id(legal_persons_id),
+    KEY index_of_name(name)
 ) COMMENT = 'Средства связи';
 
 -- Договора.
